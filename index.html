@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FBF7F0">
+<title>Share your experience · The Urban Café</title>
+<style>
+:root{
+  --cream:#FBF7F0; --card:#FFFFFF; --ink:#2A211B; --muted:#7A6D62;
+  --brown:#6B4A32; --gold:#B58A3C; --line:#EBE2D3; --err:#A23B2A;
+  --serif:ui-serif,"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+*{box-sizing:border-box;margin:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  min-height:100vh;min-height:100dvh;background:var(--cream);color:var(--ink);
+  font-family:var(--sans);line-height:1.5;
+  padding:max(20px,env(safe-area-inset-top)) 18px max(20px,env(safe-area-inset-bottom));
+  display:flex;flex-direction:column;align-items:center;
+  background-image:radial-gradient(120% 60% at 50% -10%,#F3E7D2 0%,transparent 60%);
+}
+main{width:100%;max-width:460px;flex:1}
+header{text-align:center;padding:28px 0 22px}
+.mark{width:44px;height:44px;margin:0 auto 14px;border-radius:50%;border:1.5px solid var(--gold);
+  display:grid;place-items:center;color:var(--gold);font-family:var(--serif);font-size:20px}
+h1{font-family:var(--serif);font-weight:600;font-size:2rem;letter-spacing:-.01em;line-height:1.15}
+.sub-title{font-family:var(--serif);font-style:italic;color:var(--brown);font-size:1.15rem;margin-top:4px}
+.lede{color:var(--muted);font-size:.95rem;margin:12px auto 0;max-width:34ch}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:22px 18px;
+  box-shadow:0 12px 32px -18px rgba(107,74,50,.35)}
+.screen[hidden]{display:none}
+.screen{animation:rise .5s cubic-bezier(.2,.7,.2,1)}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+.field{margin-bottom:18px}
+label{display:block;font-weight:600;font-size:.95rem;margin-bottom:8px}
+textarea{width:100%;border:1px solid var(--line);background:#FDFBF7;border-radius:16px;
+  padding:13px 14px;font:inherit;font-size:16px;color:var(--ink);resize:vertical;min-height:84px;
+  transition:border-color .2s,box-shadow .2s}
+textarea::placeholder{color:#A99C90}
+textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 4px rgba(181,138,60,.16)}
+textarea.invalid{border-color:var(--err)}
+
+.btn{width:100%;border:0;border-radius:999px;padding:16px 20px;font:inherit;font-weight:600;font-size:1rem;
+  cursor:pointer;transition:transform .15s,box-shadow .2s,background .2s}
+.btn:active{transform:scale(.98)}
+.btn:focus-visible{outline:3px solid rgba(181,138,60,.5);outline-offset:2px}
+.primary{background:linear-gradient(180deg,#7A563B,#5E3F29);color:#FFF8EC;
+  box-shadow:0 10px 22px -10px rgba(94,63,41,.7)}
+.secondary{background:transparent;color:var(--brown);border:1.5px solid var(--line)}
+.btn[disabled]{opacity:.6;cursor:default}
+.row{display:grid;gap:10px;margin-top:14px}
+.msg{font-size:.9rem;margin-top:12px;text-align:center}
+.msg.error{color:var(--err)}
+.msg.ok{color:var(--brown);background:#F6EEDD;border-radius:14px;padding:10px 12px}
+.hint{color:var(--muted);font-size:.85rem;margin-top:10px;text-align:center}
+
+#review{min-height:210px;font-family:var(--serif);font-size:17px;line-height:1.6}
+h2{font-family:var(--serif);font-weight:600;font-size:1.6rem;text-align:center;margin:8px 0 16px}
+.link{background:none;border:0;color:var(--muted);font:inherit;font-size:.9rem;text-decoration:underline;
+  cursor:pointer;display:block;margin:16px auto 0;padding:6px}
+
+.loading{text-align:center;padding:44px 10px}
+.cup{width:54px;height:54px;margin:0 auto 16px;border-radius:50%;
+  border:3px solid var(--line);border-top-color:var(--gold);animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading p{font-family:var(--serif);font-size:1.2rem;color:var(--brown)}
+
+footer{text-align:center;color:var(--muted);font-family:var(--serif);font-style:italic;font-size:.9rem;padding:26px 0 6px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="mark" aria-hidden="true">U</div>
+    <h1 id="biz-name">The Urban Café</h1>
+    <p class="sub-title">Share your experience</p>
+    <p class="lede">Tell us about your visit. We'll help you turn your own words into a polished review.</p>
+  </header>
+
+  <!-- SCREEN 1: customer input -->
+  <section id="screen-input" class="screen card">
+    <div class="field">
+      <label for="order">What did you order or use?</label>
+      <textarea id="order" rows="2" placeholder="Example: Cold coffee and pasta"></textarea>
+    </div>
+    <div class="field">
+      <label for="experience">How was your experience?</label>
+      <textarea id="experience" rows="3" placeholder="Example: The food was delicious and the staff were friendly."></textarea>
+    </div>
+    <div class="field">
+      <label for="extra">Anything else you'd like to mention?</label>
+      <textarea id="extra" rows="3" placeholder="Example: The atmosphere was relaxing and the café was clean."></textarea>
+    </div>
+    <button id="generate" class="btn primary" type="button">✨ Help Me Write My Review</button>
+    <p id="input-msg" class="msg error" role="alert" hidden></p>
+    <p class="hint">You'll choose your own star rating on Google.</p>
+  </section>
+
+  <!-- LOADING -->
+  <section id="screen-loading" class="screen card loading" hidden aria-live="polite">
+    <div class="cup" aria-hidden="true"></div>
+    <p>Creating your review...</p>
+  </section>
+
+  <!-- SCREEN 2: editable review -->
+  <section id="screen-review" class="screen card" hidden>
+    <h2>Your review is ready ✨</h2>
+    <label for="review" class="sr" style="position:absolute;left:-9999px">Your review</label>
+    <textarea id="review" rows="8"></textarea>
+    <div class="row">
+      <button id="edit" class="btn secondary" type="button">Edit Review</button>
+      <button id="post" class="btn primary" type="button">⭐ Post on Google</button>
+    </div>
+    <p id="post-msg" class="msg ok" role="status" hidden>Your review has been copied. Paste it into Google and submit it.</p>
+    <p id="copy-fail" class="msg error" hidden>We couldn't copy automatically. Please select your review text and copy it before pasting into Google.</p>
+    <p class="hint">Nothing is posted until you submit it yourself on Google.</p>
+    <button id="restart" class="link" type="button">Start over</button>
+  </section>
+</main>
+<footer>Your experience, your words.</footer>
+
+<script>
+/* ===================================================================
+   CONFIGURATION — edit these values before going live
+   =================================================================== */
+
+// 1) GOOGLE REVIEW URL — paste the business's Google review link here.
+//    (Google Business Profile → "Ask for reviews" → copy link.)
+const GOOGLE_REVIEW_URL = "REPLACE_WITH_GOOGLE_REVIEW_URL";
+
+// 2) SECURE BACKEND ENDPOINT — URL of YOUR server route that calls the AI.
+//    The AI API key must live ONLY on that server, never in this file.
+//    Leave as "" to use the demo fallback (no AI; it just tidies the
+//    customer's own words so you can test the flow).
+//
+//    Expected request  (POST, JSON):
+//      { business, category, order, experience, extra }
+//    Expected response (JSON), one of:
+//      { "review": "..." }                  -> review text
+//      { "needMoreInfo": "..." }            -> a question asking for more detail
+//
+//    The backend should send the AI provider this system instruction:
+//      "You are a review-writing assistant. Rewrite the customer's own
+//       experience into a natural, concise Google review. Never invent
+//       facts, products, services, staff names, prices, events, or
+//       experiences. Do not exaggerate. Do not manufacture a positive
+//       experience. Do not create a rating. Use only information supplied
+//       by the customer. Keep the tone natural and human. If the
+//       customer's information is insufficient, ask for more information
+//       instead of inventing details."
+const REVIEW_API_ENDPOINT = ""; // e.g. "https://your-domain.com/api/generate-review"
+
+const BUSINESS = { name: "The Urban Café", category: "Café" };
+
+/* =================================================================== */
+
+const $ = id => document.getElementById(id);
+const screens = ["screen-input","screen-loading","screen-review"];
+function show(id){
+  screens.forEach(s => $(s).hidden = s !== id);
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function words(s){ return s.trim().split(/\s+/).filter(Boolean).length; }
+
+function inputMsg(text){
+  const el = $("input-msg");
+  el.textContent = text; el.hidden = !text;
+}
+
+async function generateReview(answers){
+  if (!REVIEW_API_ENDPOINT) return demoReview(answers);   // demo only
+  const res = await fetch(REVIEW_API_ENDPOINT,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({business:BUSINESS.name,category:BUSINESS.category,...answers})
+  });
+  if(!res.ok) throw new Error("Request failed");
+  return res.json();
+}
+
+// DEMO FALLBACK — joins the customer's own sentences; adds nothing new.
+function demoReview({order,experience,extra}){
+  const fix = t => { t=t.trim(); if(!t) return ""; t=t[0].toUpperCase()+t.slice(1); return /[.!?]$/.test(t)?t:t+"."; };
+  const parts=[];
+  if(order.trim()) parts.push("I had "+order.trim().replace(/[.!?]+$/,"").replace(/^i (had|ordered)\s+/i,"")+".");
+  parts.push(fix(experience));
+  if(extra.trim()) parts.push(fix(extra));
+  return {review:parts.join(" ")};
+}
+
+$("generate").addEventListener("click", async () => {
+  const answers = {
+    order:$("order").value, experience:$("experience").value, extra:$("extra").value
+  };
+  ["order","experience","extra"].forEach(k=>$(k).classList.remove("invalid"));
+  inputMsg("");
+
+  // Validation: experience is required, plus enough detail overall.
+  const total = words(answers.order)+words(answers.experience)+words(answers.extra);
+  if (words(answers.experience) < 3){
+    $("experience").classList.add("invalid"); $("experience").focus();
+    return inputMsg("Please tell us a little about how your visit went.");
+  }
+  if (total < 8){
+    return inputMsg("Add a bit more detail so we have enough of your own words to work with.");
+  }
+
+  show("screen-loading");
+  try{
+    const data = await generateReview(answers);
+    if (data.needMoreInfo){
+      show("screen-input");
+      return inputMsg(data.needMoreInfo);
+    }
+    if (!data.review) throw new Error("Empty response");
+    $("review").value = data.review.trim();
+    $("post-msg").hidden = true; $("copy-fail").hidden = true;
+    show("screen-review");
+  }catch(e){
+    show("screen-input");
+    inputMsg("Something went wrong creating your review. Please try again.");
+  }
+});
+
+$("edit").addEventListener("click", () => {
+  const r=$("review"); r.focus(); r.setSelectionRange(r.value.length,r.value.length);
+});
+
+$("post").addEventListener("click", () => {
+  const text = $("review").value.trim();
+  if(!text) return;
+  $("post-msg").hidden = true; $("copy-fail").hidden = true;
+
+  // Open Google in a new tab immediately (inside the tap) so popup blockers allow it.
+  if (GOOGLE_REVIEW_URL && !GOOGLE_REVIEW_URL.startsWith("REPLACE")){
+    window.open(GOOGLE_REVIEW_URL,"_blank","noopener");
+  }
+
+  const done = ok => { $(ok?"post-msg":"copy-fail").hidden = false; };
+  const legacy = () => {
+    try{ const r=$("review"); r.select(); r.setSelectionRange(0,99999);
+      return document.execCommand("copy"); }catch(_){ return false; }
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(()=>done(true),()=>done(legacy()));
+  } else done(legacy());
+});
+
+$("restart").addEventListener("click", () => {
+  ["order","experience","extra","review"].forEach(k=>$(k).value="");
+  inputMsg(""); show("screen-input");
+});
+</script>
+</body>
+</html>
